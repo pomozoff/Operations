@@ -26,7 +26,7 @@ struct Lock: ReadWriteLock {
 
     mutating func read<T>(block: () -> T) -> T {
         var object: T!
-        dispatch_sync(queue) {
+        dispatch_sync_op(queue) {
             object = block()
         }
         return object
@@ -79,7 +79,7 @@ extension Protector where T: _ArrayType {
     }
 }
 
-public func dispatch_sync(queue: dispatch_queue_t, _ block: () throws -> Void) rethrows {
+public func dispatch_sync_op(queue: dispatch_queue_t, _ block: () throws -> Void) rethrows {
     var failure: ErrorType? = .None
 
     let catcher = {
@@ -98,9 +98,9 @@ public func dispatch_sync(queue: dispatch_queue_t, _ block: () throws -> Void) r
     }
 }
 
-public func dispatch_sync<T>(queue: dispatch_queue_t, _ block: () throws -> T) rethrows -> T {
+public func dispatch_sync_op<T>(queue: dispatch_queue_t, _ block: () throws -> T) rethrows -> T {
     var result: T!
-    try dispatch_sync(queue) {
+    try dispatch_sync_op(queue) {
         result = try block()
     }
     return result
@@ -108,7 +108,7 @@ public func dispatch_sync<T>(queue: dispatch_queue_t, _ block: () throws -> T) r
 
 internal func dispatch_main_sync<T>(block: () throws -> T) rethrows -> T {
     guard Queue.isMainQueue else {
-        return try dispatch_sync(Queue.Main.queue, block)
+        return try dispatch_sync_op(Queue.Main.queue, block)
     }
     return try block()
 }

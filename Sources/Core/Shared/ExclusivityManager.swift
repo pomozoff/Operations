@@ -21,7 +21,7 @@ internal class ExclusivityManager {
     }
 
     func addOperation(operation: Operation, category: String) -> NSOperation? {
-        return dispatch_sync(queue) { self._addOperation(operation, category: category) }
+        return dispatch_sync_op(queue) { self._addOperation(operation, category: category) }
     }
 
     func removeOperation(operation: Operation, category: String) {
@@ -68,7 +68,7 @@ extension ExclusivityManager {
     /// This should only be used as part of the unit testing
     /// and in v2+ will not be publically accessible
     internal func __tearDownForUnitTesting() {
-        dispatch_sync(queue) {
+        dispatch_sync_op(queue) {
             for (category, operations) in self.operations {
                 for operation in operations {
                     operation.cancel()

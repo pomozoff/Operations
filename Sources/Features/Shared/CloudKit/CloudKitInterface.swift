@@ -244,7 +244,7 @@ public protocol CKModifyRecordsOperationType: CKDatabaseOperationType {
     var clientChangeTokenData: NSData? { get set }
 
     /// - returns: a flag for atomic changes
-    var atomic: Bool { get set }
+    var atomicOp: Bool { get set }
 
     /// - returns: a per record progress block
     var perRecordProgressBlock: ((Record, Double) -> Void)? { get set }
@@ -445,6 +445,10 @@ extension CKModifyRecordsOperation: CKModifyRecordsOperationType, AssociatedErro
     public var toDelete: [RecordID]? {
         get { return recordIDsToDelete }
         set { recordIDsToDelete = newValue }
+    }
+    public var atomicOp: Bool {
+        get { return self.atomicOp }
+        set { self.atomicOp = newValue }
     }
 }
 
